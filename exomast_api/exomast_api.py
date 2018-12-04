@@ -5,6 +5,18 @@ import pandas as pd
 import requests
 
 class exoMAST_API(object):
+    """The summary line for a class docstring should fit on one line.
+            If the class has public attributes, they may be documented here
+            in an ``Attributes`` section and follow the same formatting as a
+            function's ``Args`` section. Alternatively, attributes may be documented
+            inline with the attribute's declaration (see __init__ method below).
+            Properties created with the ``@property`` decorator should be documented
+            in the property's getter method.
+            Attributes:
+                attr1 (str): Description of `attr1`.
+                attr2 (:obj:`int`, optional): Description of `attr2`.
+    """
+    
     # Default exoMAS API website
     default_url = 'https://exo.mast.stsci.edu/api'
     
@@ -19,12 +31,21 @@ class exoMAST_API(object):
     _planet_table = None
     planet_phaseplot = None
     
-    def __init__(self, planet_name, 
-                    exomast_version=0.1, 
-                    api_url=default_url, 
-                    verbose=False,
-                    quickstart=False):
-        
+    def __init__(self, planet_name, exomast_version=0.1, api_url=default_url, 
+                        verbose=False, quickstart=False):
+        """Example of docstring on the __init__ method.
+                        The __init__ method may be documented in either the class level
+                        docstring, or as a docstring on the __init__ method itself.
+                        Either form is acceptable, but the two should not be mixed. Choose one
+                        convention to document the __init__ method and be consistent with it.
+                        Note:
+                            Do not include the `self` parameter in the ``Args`` section.
+                        Args:
+                            param1 (str): Description of `param1`.
+                            param2 (:obj:`int`, optional): Description of `param2`. Multiple
+                                lines are supported.
+                            param3 (:obj:`list` of :obj:`str`): Description of `param3`.
+        """
         self.verbose = verbose
         
         if self.verbose: 
@@ -70,7 +91,15 @@ class exoMAST_API(object):
             self.get_properties()
         
     def get_spectra_filelist(self):
-        
+        """Class methods are similar to regular functions.
+        Note:
+            Do not include the `self` parameter in the ``Args`` section.
+        Args:
+            param1: The first parameter.
+            param2: The second parameter.
+        Returns:
+            True if successful, False otherwise.
+        """
         planet_spec_fname_url = '{}/spectra/{}/filelist/'.format(self.api_url, 
                                                             self._planet_name)
         
@@ -84,6 +113,15 @@ class exoMAST_API(object):
         self._spectra_filelist = json.loads(spec_fname_request)
     
     def get_spectra(self, idx_spec=0, header=None):
+        """Class methods are similar to regular functions.
+        Note:
+            Do not include the `self` parameter in the ``Args`` section.
+        Args:
+            param1: The first parameter.
+            param2: The second parameter.
+        Returns:
+            True if successful, False otherwise.
+        """
         if header is None: header = self.header
         
         if self._spectra_filelist is None:self.get_spectra_filelist()
@@ -110,6 +148,15 @@ class exoMAST_API(object):
                                                     dtype=float)
     
     def get_spectra_bokeh_plot(self, idx_tce=1):
+        """Class methods are similar to regular functions.
+        Note:
+            Do not include the `self` parameter in the ``Args`` section.
+        Args:
+            param1: The first parameter.
+            param2: The second parameter.
+        Returns:
+            True if successful, False otherwise.
+        """
         spectra_bokehplot_url = '{}/spectra/{}/plot/'.format(self.api_url, 
                                                              self._planet_name)
         
@@ -124,6 +171,15 @@ class exoMAST_API(object):
         self.spectra_bokeh_plot = json.loads(spectra_bokehplot_request) 
     
     def get_identifiers(self, idx_list=0):
+        """Class methods are similar to regular functions.
+        Note:
+            Do not include the `self` parameter in the ``Args`` section.
+        Args:
+            param1: The first parameter.
+            param2: The second parameter.
+        Returns:
+            True if successful, False otherwise.
+        """
         planet_identifier_url = '{}/exoplanets/identifiers/?name={}'.format(
                                     self.api_url, self._planet_name)
         
@@ -143,6 +199,15 @@ class exoMAST_API(object):
             exec("self." + key + " = self._planet_ident_dict['" + key + "']")        
     
     def get_properties(self, idx_list=0):
+        """Class methods are similar to regular functions.
+        Note:
+            Do not include the `self` parameter in the ``Args`` section.
+        Args:
+            param1: The first parameter.
+            param2: The second parameter.
+        Returns:
+            True if successful, False otherwise.
+        """
         planet_properties_url = '{}/exoplanets/{}/properties'.format(
                                                                 self.api_url, 
                                                                 self._planet_name)
@@ -165,6 +230,15 @@ class exoMAST_API(object):
             exec("self." + key.replace('/', '_') + " = self._planet_property_dict['" + key + "']")
     
     def get_tce(self):
+        """Class methods are similar to regular functions.
+        Note:
+            Do not include the `self` parameter in the ``Args`` section.
+        Args:
+            param1: The first parameter.
+            param2: The second parameter.
+        Returns:
+            True if successful, False otherwise.
+        """
         if self._collection not in ['kepler', 'tess']: 
             raise ValueError('This method is only useful \
                                 for Kepler and TESS objects')
@@ -183,6 +257,15 @@ class exoMAST_API(object):
         self.tce = json.loads(tce_request)
     
     def get_planet_metadata(self, idx_tce=1):
+        """Class methods are similar to regular functions.
+        Note:
+            Do not include the `self` parameter in the ``Args`` section.
+        Args:
+            param1: The first parameter.
+            param2: The second parameter.
+        Returns:
+            True if successful, False otherwise.
+        """
         if self._collection not in ['kepler', 'tess']: 
             raise ValueError('This method is only useful for \
                                 Kepler and TESS objects')
@@ -210,6 +293,15 @@ class exoMAST_API(object):
             exec("self." + key + " = self._planet_metadata_dict['" + key + "']")
     
     def get_planet_table(self, idx_tce=1):
+        """Class methods are similar to regular functions.
+        Note:
+            Do not include the `self` parameter in the ``Args`` section.
+        Args:
+            param1: The first parameter.
+            param2: The second parameter.
+        Returns:
+            True if successful, False otherwise.
+        """
         if self._collection not in ['kepler', 'tess']: 
             raise ValueError('This method is only useful for \
                                 Kepler and TESS objects')
@@ -228,6 +320,15 @@ class exoMAST_API(object):
         self._planet_table = json.loads(planet_table_request)
     
     def get_planet_phaseplot(self, idx_tce=1, embed=False):
+        """Class methods are similar to regular functions.
+        Note:
+            Do not include the `self` parameter in the ``Args`` section.
+        Args:
+            param1: The first parameter.
+            param2: The second parameter.
+        Returns:
+            True if successful, False otherwise.
+        """
         if self._collection not in ['kepler', 'tess']: 
             raise ValueError('This method is only useful for \
                                     Kepler and TESS objects')
@@ -259,7 +360,15 @@ class exoMAST_API(object):
     def make_spectra_plot(self, ax=None, add_current_fig=False, 
                             header=None, no_return=False, 
                             xscale='log', show_now = False):
-        
+        """Class methods are similar to regular functions.
+        Note:
+            Do not include the `self` parameter in the ``Args`` section.
+        Args:
+            param1: The first parameter.
+            param2: The second parameter.
+        Returns:
+            True if successful, False otherwise.
+        """
         if self.verbose: print('Creating Planetary Spectral Plot for {}'.format(
                                                                 self.planet_name))
         
