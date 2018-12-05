@@ -1,7 +1,8 @@
-import json
-import numpy as np
-import pandas as pd
-import requests
+from json import loads as jsonloads
+from numpy import copy as npcopy
+from os import path as ospath
+from pandas import DataFrame
+from requests import get as requests_get
 
 class exoMAST_API(object):
     """The summary line for a class docstring should fit on one line.
@@ -106,10 +107,10 @@ class exoMAST_API(object):
             print('Acquiring Planetary Spectral File List from {}'.format(
                                                             planet_spec_fname_url))
         
-        spec_fname_request = requests.get(planet_spec_fname_url)
+        spec_fname_request = requests_get(planet_spec_fname_url)
         spec_fname_request = spec_fname_request.content.decode('utf-8')
         
-        self._spectra_filelist = json.loads(spec_fname_request)
+        self._spectra_filelist = jsonloads(spec_fname_request)
     
     def get_spectra(self, idx_spec=0, header=None, caption=None):
         """Class methods are similar to regular functions.
@@ -135,14 +136,14 @@ class exoMAST_API(object):
             print('Acquiring Planetary Spectral File List from {}'.format(
                                                             spectrum_request_url))
         
-        spectra_request = requests.get(spectrum_request_url)
+        spectra_request = requests_get(spectrum_request_url)
         spectra_request = spectra_request.content.decode('utf-8')
         
         spectra_table = [list(filter(lambda a: a != '', line.split(' '))) 
                                         for line in spectra_request.split('\n') 
                                             if len(line) > 0 and line[0] != '#']
         
-        self.planetary_spectra_table = pd.DataFrame(spectra_table, 
+        self.planetary_spectra_table = DataFrame(spectra_table, 
                                                     columns=header, 
                                                     dtype=float)
     
@@ -163,11 +164,11 @@ class exoMAST_API(object):
             print('Acquiring Planetary Bokeh Spectral Plot from {}'.format(
                                                             spectra_bokehplot_url))
         
-        bokehplot_request = requests.get(spectra_bokehplot_url)
+        bokehplot_request = requests_get(spectra_bokehplot_url)
         spectra_bokehplot_request = bokehplot_request.content.decode('utf-8')
         
         # to be injected into Bokeh somehow (FINDME??)
-        self.spectra_bokeh_plot = json.loads(spectra_bokehplot_request) 
+        self.spectra_bokeh_plot = jsonloads(spectra_bokehplot_request) 
     
     def get_identifiers(self, idx_list=0):
         """Class methods are similar to regular functions.
@@ -185,11 +186,11 @@ class exoMAST_API(object):
         if self.verbose: print('Acquiring Planetary Identifiers from {}'.format(
                                                            planet_identifier_url))
         
-        planet_ident_request = requests.get(planet_identifier_url)
+        planet_ident_request = requests_get(planet_identifier_url)
         planet_ident_request = planet_ident_request.content.decode('utf-8')
         
         # Store dictionary of planetary identification parameters
-        self._planet_ident_dict = json.loads(planet_ident_request)
+        self._planet_ident_dict = jsonloads(planet_ident_request)
         
         if isinstance(self._planet_ident_dict, list): 
             self._planet_ident_dict = self._planet_ident_dict[idx_list]
@@ -215,11 +216,11 @@ class exoMAST_API(object):
             print('Acquiring Planetary Properties from {}'.format(
                                                            planet_properties_url))
         
-        planet_prop_request = requests.get(planet_properties_url)
+        planet_prop_request = requests_get(planet_properties_url)
         planet_properties_request = planet_prop_request.content.decode('utf-8')
         
         # Store dictionary of planetary properties
-        self._planet_property_dict = json.loads(planet_properties_request)
+        self._planet_property_dict = jsonloads(planet_properties_request)
         
         if isinstance(self._planet_property_dict, list): 
             self._planet_property_dict = self._planet_property_dict[idx_list]
@@ -250,10 +251,10 @@ class exoMAST_API(object):
             print('Acquiring Planetary Threshold Crossing Database from {}'.format(
                                                                         tce_url))
         
-        tce_request = requests.get(tce_url).content.decode('utf-8')
+        tce_request = requests_get(tce_url).content.decode('utf-8')
         
         # theshold_crossing_event
-        self.tce = json.loads(tce_request)
+        self.tce = jsonloads(tce_request)
     
     def get_planet_metadata(self, idx_tce=1):
         """Class methods are similar to regular functions.
@@ -282,11 +283,11 @@ class exoMAST_API(object):
         if self.verbose: print('Accessing Meta Data from {}'.format(
                                                             planet_metadata_url))
         
-        planet_metadata_request = requests.get(planet_metadata_url)
+        planet_metadata_request = requests_get(planet_metadata_url)
         planet_metadata_request = planet_metadata_request.content.decode('utf-8')
         
         # Plantary metadata
-        self._planet_metadata_dict = json.loads(planet_metadata_request)
+        self._planet_metadata_dict = jsonloads(planet_metadata_request)
         
         for key in self._planet_metadata_dict.keys():
             exec("self." + key + " = self._planet_metadata_dict['" + key + "']")
@@ -313,10 +314,10 @@ class exoMAST_API(object):
         if self.verbose: print('Acquiring Planetary Table from {}'.format(
                                                                 planet_table_url))
         
-        planet_table_request = requests.get(planet_table_url)
+        planet_table_request = requests_get(planet_table_url)
         planet_table_request = planet_table_request.content.decode('utf-8')
         
-        self._planet_table = json.loads(planet_table_request)
+        self._planet_table = jsonloads(planet_table_request)
     
     def get_planet_phaseplot(self, idx_tce=1, embed=False):
         """Class methods are similar to regular functions.
@@ -348,12 +349,12 @@ class exoMAST_API(object):
         if self.verbose: print('Acquiring Planetary Phase Plot from {}'.format(
                                                             planet_phaseplot_url))
         
-        planet_phplot_request = requests.get(planet_phaseplot_url)
+        planet_phplot_request = requests_get(planet_phaseplot_url)
         planet_phaseplot_request = planet_phplot_request.content.decode('utf-8')
         
-        self.planet_phaseplot = json.loads(planet_phaseplot_request)
+        self.planet_phaseplot = jsonloads(planet_phaseplot_request)
         # planet_phaseplot_request
-        # json.loads(planet_phaseplot_request) 
+        # jsonloads(planet_phaseplot_request) 
         # to be injected into Bokeh somehow (FINDME??)
     
     def make_spectra_plot(self, ax=None, add_current_fig=False, 
@@ -376,7 +377,7 @@ class exoMAST_API(object):
         if ax is None: ax = plt.gcf().get_axes()[0] \
                         if add_current_fig else plt.figure().add_subplot(111)
         
-        if header is None: header = list(np.copy(self.header))
+        if header is None: header = list(npcopy(self.header))
         
         if len(header) == 4:
             # assume same order as self.header:
@@ -394,7 +395,14 @@ class exoMAST_API(object):
         
         if not no_return: return ax
     
-    def print_table(self, table_name, flt_fmt=None, def_fmt=None, print_none=False, latex_style=False, header=None, caption=None):
+    def print_table(self, table_name=None, flt_fmt=None, def_fmt=None, 
+                            print_none=False, latex_style=False, header=None, 
+                            caption=None, print_to_file=None, overwrite=False):
+        
+        if table_name not in ['ident','property']: raise ValueError("table_name must be either 'ident' or 'property'")
+        
+        if 'ident' in table_name.lower(): table_name = 'ident'
+        if 'prop' in table_name.lower(): table_name = 'property'
         
         if caption is None: caption = 'INSERT CAPTION HERE'
         
@@ -402,76 +410,76 @@ class exoMAST_API(object):
         
         max_key_len = 0
         for key in table_to_print.keys():
-            if len(key) > max_key_len: max_key_len = len(key)
+            if len(key) > max_key_len: 
+                max_key_len = len(key)
         
         if flt_fmt is None: 
             if latex_style:
-                flt_fmt = '\t\t{:<' + str(max_key_len) + '} & {:.2f}\\'
+                flt_fmt = '\t\t{:<' + str(max_key_len) + '} & {:.2f}\\\\'
             else:
                 flt_fmt = '{:<' + str(max_key_len) + '}\t{:.2f}'
         if def_fmt is None: 
             if latex_style:
-                def_fmt = '\t\t{:<' + str(max_key_len) + '} & {}\\'
+                def_fmt = '\t\t{:<' + str(max_key_len) + '} & {}\\\\'
             else:
                 def_fmt = '{:<' + str(max_key_len) + '}\t{}'
         
+        if isinstance(print_to_file, str):
+            if ospath.exists(print_to_file) and not overwrite:
+                print('[WARNING] This will overwrite existing {}'.format(print_to_file))
+                print_to_file = print_to_file + '.new'
+                
+                print('[INFO] Added `.new` to end as {}'.format(print_to_file))
+                
+                # while ospath.exists(print_to_file):
+                #     print_to_file = print_to_file[:-1] + str(int(print_to_file[-1])+1)
+            
+            # Add '.tex' in case the above `if` adds ".new"
+            if latex_style and print_to_file[-4:] != '.tex':
+                print_to_file = print_to_file + '.tex'
+            
+            print('[INFO] Storing table in {}'.format(print_to_file))
+            
+            fileout = open(print_to_file, 'w')
+        else:
+            import sys
+            fileout = sys.stdout
+        
         if latex_style:
-            print('\\begin\{table\}\[h\]')
-            print('\t\\begin\{tabular\}\{cc\}')
-            print('\t\t\\hline')
+            print('\\begin{table}[h]', file=fileout)
+            print('\t\\begin{tabular}{cc}', file=fileout)
+            print('\t\t\\hline\\\\', file=fileout)
             
             # Header: Epoch &  $T_c-2450000$  & $i$  & $a/{R_*}$ & ${R_p}/{R_*}$ & $c_0$ \\
-            if header is not None: print('\t\t{}'.format(header))
+            if header is not None: print('\t\t{}\\\\'.format(header), file=fileout)
         
         for key,val in table_to_print.items(): 
             # if val is none; but 
             if val is not None or print_none:
-                if isinstance(val, float): 
-                    print(flt_fmt.format(key,val)) 
-                else: 
-                    print(def_fmt.format(key,val))
+                
+                key = key.replace('_', '\_')
+                if isinstance(val, str): val = val.replace('_', '\_')
+                
+                fmt = flt_fmt if isinstance(val, float) else def_fmt
+                
+                print(fmt.format(key,val), file=fileout)
         
         if latex_style:
-            print('\t\\end\{tabular\}')
-            print('\t\\caption\{'+caption+'\}')
-            print('\t\\label\{tbl:planet_'+table_name+'\}')
-            print('\\end\{table\}')
+            print('\t\\end{tabular}', file=fileout)
+            print('\t\\caption{'+caption+'}', file=fileout)
+            print('\t\\label{tbl:planet_'+table_name+'}', file=fileout)
+            print('\\end{table}', file=fileout)
+        
+        if isinstance(print_to_file, str): fileout.close()
     
-    def print_ident_table(self, flt_fmt=None, def_fmt=None, print_none=False, latex_style=False, header=None, caption=None):
-        self.print_table(table_name='ident', flt_fmt=flt_fmt, def_fmt=def_fmt, print_none=print_none, latex_style=latex_style, header=header, caption=caption)
-        '''
-        max_key_len = 0
-        for key in self._planet_ident_dict.keys():
-            if len(key) > max_key_len: max_key_len = len(key)
-        
-        if flt_fmt is None: flt_fmt = '{:<' + str(max_key_len) + '}\t{:.2f}'
-        if def_fmt is None: def_fmt = '{:<' + str(max_key_len) + '}\t{}'
-        
-        print(def_fmt)
-        for key,val in self._planet_ident_dict.items(): 
-            if isinstance(val, float): 
-                print(flt_fmt.format(key,val)) 
-            else: 
-                print(def_fmt.format(key,val))
-        '''
+    def print_ident_table(self, flt_fmt=None, def_fmt=None, print_none=False, latex_style=False, header=None, caption=None, print_to_file=None):
+        self.print_table(table_name='ident', 
+            flt_fmt=flt_fmt, def_fmt=def_fmt, print_none=print_none, latex_style=latex_style, header=header, caption=caption, print_to_file=print_to_file)
     
-    def print_properties_table(self, flt_fmt=None, def_fmt=None, print_none=False, latex_style=False, header=None, caption=None):
-        self.print_table(table_name='property', flt_fmt=flt_fmt, def_fmt=def_fmt, print_none=print_none, latex_style=latex_style, header=header, caption=caption)
-        '''
-        max_key_len = 0
-        for key in self._planet_property_dict.keys():
-            if len(key) > max_key_len: max_key_len = len(key)
-        
-        if flt_fmt is None: flt_fmt = '{:<' + str(max_key_len) + '}\t{:.2f}'        
-        if def_fmt is None: def_fmt = '{:<' + str(max_key_len) + '}\t{}'
-        
-        for key,val in self._planet_property_dict.items(): 
-            if isinstance(val, float): 
-                print(flt_fmt.format(key,val)) 
-            else: 
-                print(def_fmt.format(key,val))
-        '''
-
+    def print_properties_table(self, flt_fmt=None, def_fmt=None, print_none=False, latex_style=False, header=None, caption=None, print_to_file=None):
+        self.print_table(table_name='property', 
+            flt_fmt=flt_fmt, def_fmt=def_fmt, print_none=print_none, latex_style=latex_style, header=header, caption=caption, print_to_file=print_to_file)
+    
 if __name__ == '__main__':
     from exomast_api import exoMAST_API
     planet_name0 = 'HAT-P-26 b'
