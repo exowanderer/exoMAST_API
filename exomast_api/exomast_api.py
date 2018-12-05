@@ -1,5 +1,4 @@
 import json
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import requests
@@ -112,7 +111,7 @@ class exoMAST_API(object):
         
         self._spectra_filelist = json.loads(spec_fname_request)
     
-    def get_spectra(self, idx_spec=0, header=None):
+    def get_spectra(self, idx_spec=0, header=None, caption=None):
         """Class methods are similar to regular functions.
         Note:
             Do not include the `self` parameter in the ``Args`` section.
@@ -369,6 +368,8 @@ class exoMAST_API(object):
         Returns:
             True if successful, False otherwise.
         """
+        import matplotlib.pyplot as plt
+        
         if self.verbose: print('Creating Planetary Spectral Plot for {}'.format(
                                                                 self.planet_name))
         
@@ -393,19 +394,83 @@ class exoMAST_API(object):
         
         if not no_return: return ax
     
-    def print_ident_table(self, flt_fmt='{:<13}\t{:.2f}', def_fmt='{:<13}\t{}'):
+    def print_table(self, table_name, flt_fmt=None, def_fmt=None, print_none=False, latex_style=False, header=None, caption=None):
+        
+        if caption is None: caption = 'INSERT CAPTION HERE'
+        
+        exec("table_to_print = self._planet_"+table_name+"_dict", locals(), globals())
+        
+        max_key_len = 0
+        for key in table_to_print.keys():
+            if len(key) > max_key_len: max_key_len = len(key)
+        
+        if flt_fmt is None: 
+            if latex_style:
+                flt_fmt = '\t\t{:<' + str(max_key_len) + '} & {:.2f}\\'
+            else:
+                flt_fmt = '{:<' + str(max_key_len) + '}\t{:.2f}'
+        if def_fmt is None: 
+            if latex_style:
+                def_fmt = '\t\t{:<' + str(max_key_len) + '} & {}\\'
+            else:
+                def_fmt = '{:<' + str(max_key_len) + '}\t{}'
+        
+        if latex_style:
+            print('\\begin\{table\}\[h\]')
+            print('\t\\begin\{tabular\}\{cc\}')
+            print('\t\t\\hline')
+            
+            # Header: Epoch &  $T_c-2450000$  & $i$  & $a/{R_*}$ & ${R_p}/{R_*}$ & $c_0$ \\
+            if header is not None: print('\t\t{}'.format(header))
+        
+        for key,val in table_to_print.items(): 
+            # if val is none; but 
+            if val is not None or print_none:
+                if isinstance(val, float): 
+                    print(flt_fmt.format(key,val)) 
+                else: 
+                    print(def_fmt.format(key,val))
+        
+        if latex_style:
+            print('\t\\end\{tabular\}')
+            print('\t\\caption\{'+caption+'\}')
+            print('\t\\label\{tbl:planet_'+table_name+'\}')
+            print('\\end\{table\}')
+    
+    def print_ident_table(self, flt_fmt=None, def_fmt=None, print_none=False, latex_style=False, header=None, caption=None):
+        self.print_table(table_name='ident', flt_fmt=flt_fmt, def_fmt=def_fmt, print_none=print_none, latex_style=latex_style, header=header, caption=caption)
+        '''
+        max_key_len = 0
+        for key in self._planet_ident_dict.keys():
+            if len(key) > max_key_len: max_key_len = len(key)
+        
+        if flt_fmt is None: flt_fmt = '{:<' + str(max_key_len) + '}\t{:.2f}'
+        if def_fmt is None: def_fmt = '{:<' + str(max_key_len) + '}\t{}'
+        
+        print(def_fmt)
         for key,val in self._planet_ident_dict.items(): 
             if isinstance(val, float): 
                 print(flt_fmt.format(key,val)) 
             else: 
                 print(def_fmt.format(key,val))
+        '''
     
-    def print_properties_table(self, flt_fmt='{:<13}\t{:.2f}', def_fmt='{:<13}\t{}'):
+    def print_properties_table(self, flt_fmt=None, def_fmt=None, print_none=False, latex_style=False, header=None, caption=None):
+        self.print_table(table_name='property', flt_fmt=flt_fmt, def_fmt=def_fmt, print_none=print_none, latex_style=latex_style, header=header, caption=caption)
+        '''
+        max_key_len = 0
+        for key in self._planet_property_dict.keys():
+            if len(key) > max_key_len: max_key_len = len(key)
+        
+        if flt_fmt is None: flt_fmt = '{:<' + str(max_key_len) + '}\t{:.2f}'        
+        if def_fmt is None: def_fmt = '{:<' + str(max_key_len) + '}\t{}'
+        
         for key,val in self._planet_property_dict.items(): 
             if isinstance(val, float): 
                 print(flt_fmt.format(key,val)) 
             else: 
                 print(def_fmt.format(key,val))
+        '''
 
 if __name__ == '__main__':
     from exomast_api import exoMAST_API
@@ -431,6 +496,8 @@ if __name__ == '__main__':
     kic1255.get_planet_table()
     kic1255.get_planet_phaseplot()
     
+    ## Plotting Spectra
+    import matplotlib.pyplot as plt
     fig = plt.figure()
     ax = fig.add_subplot(111)
     
