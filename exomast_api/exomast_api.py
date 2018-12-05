@@ -392,6 +392,20 @@ class exoMAST_API(object):
         if show_now: plt.show()
         
         if not no_return: return ax
+    
+    def print_ident_table(self, flt_fmt='{:<13}\t{:.2f}', def_fmt='{:<13}\t{}'):
+        for key,val in self._planet_ident_dict.items(): 
+            if isinstance(val, float): 
+                print(flt_fmt.format(key,val)) 
+            else: 
+                print(def_fmt.format(key,val))
+    
+    def print_properties_table(self, flt_fmt='{:<13}\t{:.2f}', def_fmt='{:<13}\t{}'):
+        for key,val in self._planet_property_dict.items(): 
+            if isinstance(val, float): 
+                print(flt_fmt.format(key,val)) 
+            else: 
+                print(def_fmt.format(key,val))
 
 if __name__ == '__main__':
     from exomast_api import exoMAST_API
