@@ -3,18 +3,19 @@ from numpy import copy as npcopy
 from os import path as ospath
 from pandas import DataFrame
 from requests import get as requests_get
+from astropy import units
 
 class exoMAST_API(object):
     """The summary line for a class docstring should fit on one line.
-            If the class has public attributes, they may be documented here
-            in an ``Attributes`` section and follow the same formatting as a
-            function's ``Args`` section. Alternatively, attributes may be documented
-            inline with the attribute's declaration (see __init__ method below).
-            Properties created with the ``@property`` decorator should be documented
-            in the property's getter method.
-            Attributes:
-                attr1 (str): Description of `attr1`.
-                attr2 (:obj:`int`, optional): Description of `attr2`.
+        If the class has public attributes, they may be documented here
+        in an ``Attributes`` section and follow the same formatting as a
+        function's ``Args`` section. Alternatively, attributes may be documented
+        inline with the attribute's declaration (see __init__ method below).
+        Properties created with the ``@property`` decorator should be documented
+        in the property's getter method.
+        Attributes:
+            attr1 (str): Description of `attr1`.
+            attr2 (:obj:`int`, optional): Description of `attr2`.
     """
     
     # Default exoMAS API website
@@ -34,17 +35,18 @@ class exoMAST_API(object):
     def __init__(self, planet_name, exomast_version=0.1, api_url=default_url, 
                         verbose=False, quickstart=False):
         """Example of docstring on the __init__ method.
-                        The __init__ method may be documented in either the class level
-                        docstring, or as a docstring on the __init__ method itself.
-                        Either form is acceptable, but the two should not be mixed. Choose one
-                        convention to document the __init__ method and be consistent with it.
-                        Note:
-                            Do not include the `self` parameter in the ``Args`` section.
-                        Args:
-                            param1 (str): Description of `param1`.
-                            param2 (:obj:`int`, optional): Description of `param2`. Multiple
-                                lines are supported.
-                            param3 (:obj:`list` of :obj:`str`): Description of `param3`.
+
+        The __init__ method may be documented in either the class level
+        docstring, or as a docstring on the __init__ method itself.
+        Either form is acceptable, but the two should not be mixed. Choose one
+        convention to document the __init__ method and be consistent with it.
+        Note:
+            Do not include the `self` parameter in the ``Args`` section.
+        Args:
+            param1 (str): Description of `param1`.
+            param2 (:obj:`int`, optional): Description of `param2`. Multiple
+                lines are supported.
+            param3 (:obj:`list` of :obj:`str`): Description of `param3`.
         """
         self.verbose = verbose
         
@@ -61,6 +63,8 @@ class exoMAST_API(object):
         self.verbose = verbose
         
         self._planet_name = self.planet_name.lower().replace(' ', '%20')
+        self._planet_name = self._planet_name[0].upper() \
+                            + self._planet_name[1:]
         
         # For use with `self.get_spectra`
         self.header = ['Wavelength (microns)', 
@@ -105,7 +109,7 @@ class exoMAST_API(object):
         
         if self.verbose: 
             print('Acquiring Planetary Spectral File List from {}'.format(
-                                                            planet_spec_fname_url))
+                                                        planet_spec_fname_url))
         
         spec_fname_request = requests_get(planet_spec_fname_url)
         spec_fname_request = spec_fname_request.content.decode('utf-8')
@@ -128,20 +132,21 @@ class exoMAST_API(object):
         
         spec_fname = self._spectra_filelist['filenames'][idx_spec]
         
-        spectrum_request_url = "{}/spectra/{}/file/{}".format(self.api_url, 
-                                                              self._planet_name, 
-                                                              spec_fname)
+        spectrum_request_url = "{}/spectra/{}/file/{}".format(
+                                                            self.api_url, 
+                                                            self._planet_name, 
+                                                            spec_fname)
         
         if self.verbose: 
             print('Acquiring Planetary Spectral File List from {}'.format(
-                                                            spectrum_request_url))
+                                                        spectrum_request_url))
         
         spectra_request = requests_get(spectrum_request_url)
         spectra_request = spectra_request.content.decode('utf-8')
         
         spectra_table = [list(filter(lambda a: a != '', line.split(' '))) 
-                                        for line in spectra_request.split('\n') 
-                                            if len(line) > 0 and line[0] != '#']
+                                    for line in spectra_request.split('\n') 
+                                        if len(line) > 0 and line[0] != '#']
         
         self.planetary_spectra_table = DataFrame(spectra_table, 
                                                     columns=header, 
@@ -162,7 +167,7 @@ class exoMAST_API(object):
         
         if self.verbose: 
             print('Acquiring Planetary Bokeh Spectral Plot from {}'.format(
-                                                            spectra_bokehplot_url))
+                                                        spectra_bokehplot_url))
         
         bokehplot_request = requests_get(spectra_bokehplot_url)
         spectra_bokehplot_request = bokehplot_request.content.decode('utf-8')
@@ -183,8 +188,8 @@ class exoMAST_API(object):
         planet_identifier_url = '{}/exoplanets/identifiers/?name={}'.format(
                                     self.api_url, self._planet_name)
         
-        if self.verbose: print('Acquiring Planetary Identifiers from {}'.format(
-                                                           planet_identifier_url))
+        if self.verbose: print('Acquiring Planetary Identifiers '
+                                'from {}'.format(planet_identifier_url))
         
         planet_ident_request = requests_get(planet_identifier_url)
         planet_ident_request = planet_ident_request.content.decode('utf-8')
@@ -209,12 +214,12 @@ class exoMAST_API(object):
             True if successful, False otherwise.
         """
         planet_properties_url = '{}/exoplanets/{}/properties'.format(
-                                                                self.api_url, 
-                                                                self._planet_name)
+                                                            self.api_url, 
+                                                            self._planet_name)
         
         if self.verbose: 
             print('Acquiring Planetary Properties from {}'.format(
-                                                           planet_properties_url))
+                                                        planet_properties_url))
         
         planet_prop_request = requests_get(planet_properties_url)
         planet_properties_request = planet_prop_request.content.decode('utf-8')
@@ -222,18 +227,27 @@ class exoMAST_API(object):
         # Store dictionary of planetary properties
         self._planet_property_dict = jsonloads(planet_properties_request)
         
-        if isinstance(self._planet_property_dict, list): 
-            if idx_list < len(self._planet_property_dict):
-                idx_planet_prop = self._planet_property_dict[idx_list]
-            else:
-                idx_planet_prop = {}
+        if isinstance(self._planet_property_dict, list) \
+            and len(self._planet_property_dict) > 0: 
+            
+            if idx_list >= len(self._planet_property_dict):
+                raise IndexError('{} does not exist in range {}'.format(
+                        idx_list, len(self._planet_property_dict)))
 
+            self._planet_property_dict = self._planet_property_dict[idx_list]
+        else:
             self._planet_property_dict = {}
-        
+
         for key in self._planet_property_dict.keys():
             # print("self." + key + " = self._planet_property_dict['" + key + "']")
-            exec("self." + key.replace('/', '_') + " = self._planet_property_dict['" + key + "']")
-    
+            exec("self." + key.replace('/', '_') + 
+                " = self._planet_property_dict['" + key + "']")
+
+        if self.Rp_Rs is None:
+            # This might differ from `self.transit_depth`
+            Rp_sun = (self.Rp * units.R_jup).to(units.R_sun).value
+            self.Rp_Rs = Rp_sun / self.Rs
+
     def get_tce(self):
         """Class methods are similar to regular functions.
         Note:
