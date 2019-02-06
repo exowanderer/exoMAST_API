@@ -223,7 +223,12 @@ class exoMAST_API(object):
         self._planet_property_dict = jsonloads(planet_properties_request)
         
         if isinstance(self._planet_property_dict, list): 
-            self._planet_property_dict = self._planet_property_dict[idx_list]
+            if idx_list < len(self._planet_property_dict):
+                idx_planet_prop = self._planet_property_dict[idx_list]
+            else:
+                idx_planet_prop = None
+                
+            self._planet_property_dict = None
         
         for key in self._planet_property_dict.keys():
             # print("self." + key + " = self._planet_property_dict['" + key + "']")
@@ -398,6 +403,18 @@ class exoMAST_API(object):
     def print_table(self, table_name=None, flt_fmt=None, def_fmt=None, 
                             print_none=False, latex_style=False, header=None, 
                             caption=None, print_to_file=None, overwrite=False):
+        """Class methods are similar to regular functions.
+        Note:
+            Do not include the `self` parameter in the ``Args`` section.
+        Args:
+            param1: The first parameter.
+            param2: The second parameter.
+        Returns:
+            True if successful, False otherwise.
+        
+        # For latex, output to a .tex file and then use \input{filename.tex}
+        # https://tex.stackexchange.com/questions/133021/table-input-from-separate-tex-file
+        """
         
         if table_name not in ['ident','property']: raise ValueError("table_name must be either 'ident' or 'property'")
         
@@ -457,7 +474,7 @@ class exoMAST_API(object):
             # if val is none; but 
             if val is not None or print_none:
                 
-                key = key.replace('_', '\_')
+                key = key.replace('_', ' ')
                 if isinstance(val, str): val = val.replace('_', '\_')
                 
                 fmt = flt_fmt if isinstance(val, float) else def_fmt
@@ -473,10 +490,28 @@ class exoMAST_API(object):
         if isinstance(print_to_file, str): fileout.close()
     
     def print_ident_table(self, flt_fmt=None, def_fmt=None, print_none=False, latex_style=False, header=None, caption=None, print_to_file=None):
+        """Class methods are similar to regular functions.
+        Note:
+            Do not include the `self` parameter in the ``Args`` section.
+        Args:
+            param1: The first parameter.
+            param2: The second parameter.
+        Returns:
+            True if successful, False otherwise.
+        """
         self.print_table(table_name='ident', 
             flt_fmt=flt_fmt, def_fmt=def_fmt, print_none=print_none, latex_style=latex_style, header=header, caption=caption, print_to_file=print_to_file)
     
     def print_properties_table(self, flt_fmt=None, def_fmt=None, print_none=False, latex_style=False, header=None, caption=None, print_to_file=None):
+        """Class methods are similar to regular functions.
+        Note:
+            Do not include the `self` parameter in the ``Args`` section.
+        Args:
+            param1: The first parameter.
+            param2: The second parameter.
+        Returns:
+            True if successful, False otherwise.
+        """
         self.print_table(table_name='property', 
             flt_fmt=flt_fmt, def_fmt=def_fmt, print_none=print_none, latex_style=latex_style, header=header, caption=caption, print_to_file=print_to_file)
     
