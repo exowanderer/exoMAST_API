@@ -226,9 +226,9 @@ class exoMAST_API(object):
             if idx_list < len(self._planet_property_dict):
                 idx_planet_prop = self._planet_property_dict[idx_list]
             else:
-                idx_planet_prop = None
-                
-            self._planet_property_dict = None
+                idx_planet_prop = {}
+
+            self._planet_property_dict = {}
         
         for key in self._planet_property_dict.keys():
             # print("self." + key + " = self._planet_property_dict['" + key + "']")
