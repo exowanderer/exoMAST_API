@@ -43,4 +43,42 @@ for key,val in exoplanet._planet_property_dict.items():
     print('{:25}{}'.format(key,val))
 ```
 
-# 
+# Detrended Flux Time Series Data Queries
+
+If the target has a KIC (Kepler) or (soon-to-be) TIC (TESS) id, then the api can access the more specific information; such as
+
+### Listing TCEs
+*List all of the available TCEs for this star: considerations apply for multiple transiting system*
+
+These can be accesses from exomast_api (here) as
+
+```python
+exoplanet.get_tce()
+print('TCEs Available: {}'.format(exoplanet.tce))
+```
+
+### Metatdata queries
+*Provide extensive information about this KIC/TIC system*
+This operation will acquire 'DV Primary Header' and 'DV Data Header' information
+
+```python
+exoplanet.get_planet_metadata()
+for key0 in exoplanet._planet_metadata_dict.keys():
+    print('\n\n{}\n'.format(key0))
+    for key,val in exoplanet._planet_metadata_dict[key0].items():
+        print('{:12}{}'.format(key,val))
+```
+
+### Data queries
+*Acquire the detrended light curves for either a KIC or a TIC*
+This provides 2 entries in the dictionary `exoplanet._planet_table`, which can be viewed as:
+```python
+exoplanet.get_planet_table()
+print('\n\nFields:\n'.format(key0))
+for val in exoplanet._planet_table['fields']:
+    print('{:12}{:13}{}'.format(val['colname'], val['datatype'], val['description']))
+
+print(type(exoplanet._planet_table['data']))
+for key,val in exoplanet._planet_table['data'][0].items():
+    print('{:12}{}'.format(key,val))
+```
