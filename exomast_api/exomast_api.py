@@ -31,7 +31,8 @@ class exoMAST_API(object):
     planet_metadata = None
     _planet_table = None
     planet_phaseplot = None
-    
+    canonical_name = None
+
     def __init__(self, planet_name, exomast_version=0.1, api_url=default_url, 
                         verbose=False, quickstart=False):
         """Example of docstring on the __init__ method.
@@ -62,9 +63,11 @@ class exoMAST_API(object):
         self.exomast_version = exomast_version
         self.verbose = verbose
         
-        self._planet_name = self.planet_name.lower().replace(' ', '%20')
-        self._planet_name = self._planet_name[0].upper() \
-                            + self._planet_name[1:]
+        self.get_canonical_name()
+
+        # self._planet_name = self.planet_name.lower().replace(' ', '%20')
+        # self._planet_name = self._planet_name[0].upper() \
+                            # + self._planet_name[1:]
         
         # For use with `self.get_spectra`
         self.header = ['Wavelength (microns)', 
@@ -203,6 +206,28 @@ class exoMAST_API(object):
         for key in self._planet_ident_dict.keys():
             exec("self." + key + " = self._planet_ident_dict['" + key + "']")        
     
+    def get_canonical_name(self):
+        '''Get ExoMAST prefered name for exoplanet.
+            Parameters
+            ----------
+            target_name : string
+                The name of the target transit. 
+            Returns
+            -------
+            canonical_name : string
+        '''
+
+        # if self._planet_ident_dict is None: self.get_identifiers()
+
+        target_url = "https://exo.mast.stsci.edu/api/v0.1/exoplanets/identifiers/"
+        
+        # Create params dict for url parsing. Easier than trying to format yourself.
+        params = {"name":self.planet_name}
+        
+        r = requests_get(target_url, params=params)
+        self._identifiers = r.json()
+        self._planet_name = self._identifiers['canonicalName']
+
     def get_properties(self, idx_list=0):
         """Class methods are similar to regular functions.
         Note:
