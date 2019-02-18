@@ -94,6 +94,11 @@ class exoMAST_API(object):
             # Default behaviour to grab the planetary identifiers 
             self.get_properties()
         
+    def check_request(self, request_url, request_return):
+        if 'Internal Server Error' in request_return:
+            raise HTTPError('{} generated the error:\n{}'.format(request_url, 
+                                                            request_return))
+
     def get_spectra_filelist(self):
         """Class methods are similar to regular functions.
         Note:
@@ -114,6 +119,8 @@ class exoMAST_API(object):
         spec_fname_request = requests_get(planet_spec_fname_url)
         spec_fname_request = spec_fname_request.content.decode('utf-8')
         
+        self.check_request(planet_spec_fname_url, spec_fname_request)
+
         self._spectra_filelist = jsonloads(spec_fname_request)
     
     def get_spectra(self, idx_spec=0, header=None, caption=None):
@@ -172,6 +179,8 @@ class exoMAST_API(object):
         bokehplot_request = requests_get(spectra_bokehplot_url)
         spectra_bokehplot_request = bokehplot_request.content.decode('utf-8')
         
+        self.check_request(spectra_bokehplot_url, spectra_bokehplot_request)
+        
         # to be injected into Bokeh somehow (FINDME??)
         self.spectra_bokeh_plot = jsonloads(spectra_bokehplot_request) 
     
@@ -201,6 +210,8 @@ class exoMAST_API(object):
                             ' It is possible that the target is not '
                             ' included in the database as named; or it may not'
                             ' exist.')
+
+        self.check_request(planet_identifier_url, planet_ident_request)
 
         # Store dictionary of planetary identification parameters
         self._planet_ident_dict = jsonloads(planet_ident_request)
@@ -235,6 +246,8 @@ class exoMAST_API(object):
         planet_prop_request = requests_get(planet_properties_url)
         planet_properties_request = planet_prop_request.content.decode('utf-8')
         
+        self.check_request(planet_properties_url, planet_properties_request)
+
         # Store dictionary of planetary properties
         self._planet_property_dict = jsonloads(planet_properties_request)
         
@@ -283,6 +296,8 @@ class exoMAST_API(object):
         
         tce_request = requests_get(tce_url).content.decode('utf-8')
         
+        self.check_request(tce_url, tce_request)
+
         # theshold_crossing_event
         self.tce = jsonloads(tce_request)
     
@@ -314,8 +329,11 @@ class exoMAST_API(object):
                                                             planet_metadata_url))
         
         planet_metadata_request = requests_get(planet_metadata_url)
-        planet_metadata_request = planet_metadata_request.content.decode('utf-8')
+        planet_metadata_request = planet_metadata_request.content
+        planet_metadata_request = planet_metadata_request.decode('utf-8')
         
+        self.check_request(planet_metadata_url, planet_metadata_request)
+
         # Plantary metadata
         self._planet_metadata_dict = jsonloads(planet_metadata_request)
         
@@ -349,6 +367,8 @@ class exoMAST_API(object):
         planet_table_request = requests_get(planet_table_url)
         planet_table_request = planet_table_request.content.decode('utf-8')
         
+        self.check_request(planet_table_url, planet_table_request)
+
         self._planet_table = jsonloads(planet_table_request)
     
     def get_planet_phaseplot(self, idx_tce=1, embed=False):
@@ -382,8 +402,11 @@ class exoMAST_API(object):
                                                             planet_phaseplot_url))
         
         planet_phplot_request = requests_get(planet_phaseplot_url)
-        planet_phaseplot_request = planet_phplot_request.content.decode('utf-8')
+        planet_phaseplot_request = planet_phplot_request.content
+        planet_phplot_request = planet_phplot_request.decode('utf-8')
         
+        self.check_request(planet_phaseplot_url, planet_phplot_request)
+
         self.planet_phaseplot = jsonloads(planet_phaseplot_request)
         # planet_phaseplot_request
         # jsonloads(planet_phaseplot_request) 
