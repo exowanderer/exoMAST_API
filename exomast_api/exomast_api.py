@@ -93,13 +93,13 @@ class exoMAST_API(object):
 
             # Default behaviour to grab the planetary identifiers 
             self.get_properties()
-        
+    
     def check_request(self, request_url, request_return):
         if 'Internal Server Error' in request_return:
             print("Cannot access exo.mast.stsci.edu via API.\n"
                   " Confirm that the URL "
                   "{} exits in your browser.\n".format(request_url))
-            
+
             raise HTTPError('{} generated the error:\n{}'.format(request_url, 
                                                             request_return))
 
