@@ -96,6 +96,10 @@ class exoMAST_API(object):
         
     def check_request(self, request_url, request_return):
         if 'Internal Server Error' in request_return:
+            print("Cannot access exo.mast.stsci.edu via API.\n"
+                  " Confirm that the URL "
+                  "{} exits in your browser.\n".format(request_url))
+            
             raise HTTPError('{} generated the error:\n{}'.format(request_url, 
                                                             request_return))
 
@@ -180,7 +184,7 @@ class exoMAST_API(object):
         spectra_bokehplot_request = bokehplot_request.content.decode('utf-8')
         
         self.check_request(spectra_bokehplot_url, spectra_bokehplot_request)
-        
+
         # to be injected into Bokeh somehow (FINDME??)
         self.spectra_bokeh_plot = jsonloads(spectra_bokehplot_request) 
     
