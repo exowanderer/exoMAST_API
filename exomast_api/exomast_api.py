@@ -65,7 +65,7 @@ class exoMAST_API(object):
 
         # this *may* be updated in `get_identifiers`
         self.planet_name = planet_name
-        self._planet_url_name = planet_name.replace(' ', '%20')
+        self._planet_url_name = self.planet_name.replace(' ', '%20')
         
         self.exomast_version = exomast_version
         self.verbose = verbose
@@ -154,7 +154,7 @@ class exoMAST_API(object):
 
         if 'canonicalName' in self._planet_ident_dict.keys():
             self.planet_name = self._planet_ident_dict['canonicalName']
-            self._planet_url_name = planet_name.replace(' ', '%20')
+            self._planet_url_name = self.planet_name.replace(' ', '%20')
     
     def get_properties(self, idx_list=0):
         """Class methods are similar to regular functions.
