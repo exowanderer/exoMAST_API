@@ -64,7 +64,8 @@ class exoMAST_API(object):
         self.input_planet_name = planet_name 
 
         # this *may* be updated in `get_identifiers`
-        self.planet_name = planet_name 
+        self.planet_name = planet_name
+        self._planet_url_name = planet_name.replace(' ', '%20')
         
         self.exomast_version = exomast_version
         self.verbose = verbose
@@ -95,99 +96,24 @@ class exoMAST_API(object):
             self.get_properties()
     
     def check_request(self, request_url, request_return):
+        api_example_url = "https://exo.mast.stsci.edu/api/v0.1/exoplanets/"\
+                          "identifiers/?name=kepler%201b"
+
         if 'Internal Server Error' in request_return:
             print("Cannot access exo.mast.stsci.edu via API.\n"
                   " Confirm that the URL "
-                  "{} exits in your browser.\n".format(request_url))
+                  "{} exits in your browser.\n".format(
+                                            request_url.replace(' ', '%20')))
+
+            print("\nIf that site does not load, then confirm that the URL"
+                  " {} loads instead."
+                  " The second URL is the API example URL."
+                  " If it does not load, then the API server is likely"
+                  " unavailable".format(api_example_url))
 
             raise HTTPError('{} generated the error:\n{}'.format(request_url, 
                                                             request_return))
 
-    def get_spectra_filelist(self):
-        """Class methods are similar to regular functions.
-        Note:
-            Do not include the `self` parameter in the ``Args`` section.
-        Args:
-            param1: The first parameter.
-            param2: The second parameter.
-        Returns:
-            True if successful, False otherwise.
-        """
-        planet_spec_fname_url = '{}/spectra/{}/filelist/'.format(self.api_url, 
-                                                            self.planet_name)
-        
-        if self.verbose: 
-            print('Acquiring Planetary Spectral File List from {}'.format(
-                                                        planet_spec_fname_url))
-        
-        spec_fname_request = requests_get(planet_spec_fname_url)
-        spec_fname_request = spec_fname_request.content.decode('utf-8')
-        
-        self.check_request(planet_spec_fname_url, spec_fname_request)
-
-        self._spectra_filelist = jsonloads(spec_fname_request)
-    
-    def get_spectra(self, idx_spec=0, header=None, caption=None):
-        """Class methods are similar to regular functions.
-        Note:
-            Do not include the `self` parameter in the ``Args`` section.
-        Args:
-            param1: The first parameter.
-            param2: The second parameter.
-        Returns:
-            True if successful, False otherwise.
-        """
-        if header is None: header = self.header
-        
-        if self._spectra_filelist is None:self.get_spectra_filelist()
-        
-        spec_fname = self._spectra_filelist['filenames'][idx_spec]
-        
-        spectrum_request_url = "{}/spectra/{}/file/{}".format(
-                                                            self.api_url, 
-                                                            self.planet_name, 
-                                                            spec_fname)
-        
-        if self.verbose: 
-            print('Acquiring Planetary Spectral File List from {}'.format(
-                                                        spectrum_request_url))
-        
-        spectra_request = requests_get(spectrum_request_url)
-        spectra_request = spectra_request.content.decode('utf-8')
-        
-        spectra_table = [list(filter(lambda a: a != '', line.split(' '))) 
-                                    for line in spectra_request.split('\n') 
-                                        if len(line) > 0 and line[0] != '#']
-        
-        self.planetary_spectra_table = DataFrame(spectra_table, 
-                                                    columns=header, 
-                                                    dtype=float)
-    
-    def get_spectra_bokeh_plot(self, idx_tce=1):
-        """Class methods are similar to regular functions.
-        Note:
-            Do not include the `self` parameter in the ``Args`` section.
-        Args:
-            param1: The first parameter.
-            param2: The second parameter.
-        Returns:
-            True if successful, False otherwise.
-        """
-        spectra_bokehplot_url = '{}/spectra/{}/plot/'.format(self.api_url, 
-                                                             self.planet_name)
-        
-        if self.verbose: 
-            print('Acquiring Planetary Bokeh Spectral Plot from {}'.format(
-                                                        spectra_bokehplot_url))
-        
-        bokehplot_request = requests_get(spectra_bokehplot_url)
-        spectra_bokehplot_request = bokehplot_request.content.decode('utf-8')
-        
-        self.check_request(spectra_bokehplot_url, spectra_bokehplot_request)
-
-        # to be injected into Bokeh somehow (FINDME??)
-        self.spectra_bokeh_plot = jsonloads(spectra_bokehplot_request) 
-    
     def get_identifiers(self, idx_list=0):
         """ Class methods are similar to regular functions.
             
@@ -201,7 +127,7 @@ class exoMAST_API(object):
         """
 
         planet_identifier_url = '{}/exoplanets/identifiers/?name={}'.format(
-                                    self.api_url, self.planet_name)
+                                    self.api_url, self._planet_url_name)
         
         if self.verbose: print('Acquiring Planetary Identifiers '
                                 'from {}'.format(planet_identifier_url))
@@ -228,6 +154,7 @@ class exoMAST_API(object):
 
         if 'canonicalName' in self._planet_ident_dict.keys():
             self.planet_name = self._planet_ident_dict['canonicalName']
+            self._planet_url_name = planet_name.replace(' ', '%20')
     
     def get_properties(self, idx_list=0):
         """Class methods are similar to regular functions.
@@ -240,8 +167,8 @@ class exoMAST_API(object):
             True if successful, False otherwise.
         """
         planet_properties_url = '{}/exoplanets/{}/properties'.format(
-                                                            self.api_url, 
-                                                            self.planet_name)
+                                                        self.api_url, 
+                                                        self._planet_url_name)
         
         if self.verbose: 
             print('Acquiring Planetary Properties from {}'.format(
@@ -271,11 +198,97 @@ class exoMAST_API(object):
             exec("self." + key.replace('/', '_') + 
                 " = self._planet_property_dict['" + key + "']")
 
-        if self.Rp_Rs is None:
-            # This might differ from `self.transit_depth`
-            Rp_sun = (self.Rp * units.R_jup).to(units.R_sun).value
-            self.Rp_Rs = Rp_sun / self.Rs
+        if not hasattr(self,'Rp_Rs') and \
+            hasattr(self,'Rp') and hasattr(self,'Rs'):
+                # This might differ from `self.transit_depth`
+                Rp_sun = (self.Rp * units.R_jup).to(units.R_sun).value
+                self.Rp_Rs = Rp_sun / self.Rs
 
+    def get_spectra_filelist(self):
+        """Class methods are similar to regular functions.
+        Note:
+            Do not include the `self` parameter in the ``Args`` section.
+        Args:
+            param1: The first parameter.
+            param2: The second parameter.
+        Returns:
+            True if successful, False otherwise.
+        """
+        planet_spec_fname_url = '{}/spectra/{}/filelist/'.format(self.api_url, 
+                                                        self._planet_url_name)
+        
+        if self.verbose: 
+            print('Acquiring Planetary Spectral File List from {}'.format(
+                                                        planet_spec_fname_url))
+        
+        spec_fname_request = requests_get(planet_spec_fname_url)
+        spec_fname_request = spec_fname_request.content.decode('utf-8')
+        
+        self.check_request(planet_spec_fname_url, spec_fname_request)
+
+        self._spectra_filelist = jsonloads(spec_fname_request)
+    
+    def get_spectra(self, idx_spec=0, header=None, caption=None):
+        """Class methods are similar to regular functions.
+        Note:
+            Do not include the `self` parameter in the ``Args`` section.
+        Args:
+            param1: The first parameter.
+            param2: The second parameter.
+        Returns:
+            True if successful, False otherwise.
+        """
+        if header is None: header = self.header
+        
+        if self._spectra_filelist is None:self.get_spectra_filelist()
+        
+        spec_fname = self._spectra_filelist['filenames'][idx_spec]
+        
+        spectrum_request_url = "{}/spectra/{}/file/{}".format(
+                                                        self.api_url, 
+                                                        self._planet_url_name, 
+                                                        spec_fname)
+        
+        if self.verbose: 
+            print('Acquiring Planetary Spectral File List from {}'.format(
+                                                        spectrum_request_url))
+        
+        spectra_request = requests_get(spectrum_request_url)
+        spectra_request = spectra_request.content.decode('utf-8')
+        
+        spectra_table = [list(filter(lambda a: a != '', line.split(' '))) 
+                                    for line in spectra_request.split('\n') 
+                                        if len(line) > 0 and line[0] != '#']
+        
+        self.planetary_spectra_table = DataFrame(spectra_table, 
+                                                    columns=header, 
+                                                    dtype=float)
+    
+    def get_spectra_bokeh_plot(self, idx_tce=1):
+        """Class methods are similar to regular functions.
+        Note:
+            Do not include the `self` parameter in the ``Args`` section.
+        Args:
+            param1: The first parameter.
+            param2: The second parameter.
+        Returns:
+            True if successful, False otherwise.
+        """
+        spectra_bokehplot_url = '{}/spectra/{}/plot/'.format(self.api_url, 
+                                                        self._planet_url_name)
+        
+        if self.verbose: 
+            print('Acquiring Planetary Bokeh Spectral Plot from {}'.format(
+                                                        spectra_bokehplot_url))
+        
+        bokehplot_request = requests_get(spectra_bokehplot_url)
+        spectra_bokehplot_request = bokehplot_request.content.decode('utf-8')
+        
+        self.check_request(spectra_bokehplot_url, spectra_bokehplot_request)
+
+        # to be injected into Bokeh somehow (FINDME??)
+        self.spectra_bokeh_plot = jsonloads(spectra_bokehplot_request) 
+    
     def get_tce(self):
         """Class methods are similar to regular functions.
         Note:
