@@ -1,6 +1,6 @@
 from json import loads as jsonloads
 from numpy import copy as npcopy
-from os import path as ospath
+import os
 from pandas import DataFrame
 from requests import get as requests_get, HTTPError
 from astropy import units
@@ -518,13 +518,13 @@ class exoMAST_API(object):
 				def_fmt = '{:<' + str(max_key_len) + '}\t{}'
 		
 		if isinstance(print_to_file, str):
-			if ospath.exists(print_to_file) and not overwrite:
+			if os.path.exists(print_to_file) and not overwrite:
 				print('[WARNING] This will overwrite existing {}'.format(print_to_file))
 				print_to_file = print_to_file + '.new'
 				
 				print('[INFO] Added `.new` to end as {}'.format(print_to_file))
 				
-				# while ospath.exists(print_to_file):
+				# while os.path.exists(print_to_file):
 				#	 print_to_file = print_to_file[:-1] + str(int(print_to_file[-1])+1)
 			
 			# Add '.tex' in case the above `if` adds ".new"
