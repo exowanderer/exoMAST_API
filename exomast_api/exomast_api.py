@@ -609,7 +609,7 @@ class exoMAST_API(object):
 		
 		joblib.dump(self.__dict__ , save_filename)
 
-	def load_instance(self, load_dir=None):
+	def load_instance(self, load_dir=None, verbose=False):
 		default_load_dir = os.environ['HOME'] + '/.exomast_api/'
 		load_dir = load_dir or default_load_dir
 		if not os.path.exists(load_dir): os.mkdir(load_dir)
