@@ -99,8 +99,7 @@ class exoMAST_API(object):
 			load_filename = '{}.exomast.joblib.save'
 			load_filename = load_filename.format(planet_name_)
 			load_filename = '{}/{}'.format(default_load_dir, load_filename)
-			print(load_filename)
-
+			
 			if os.path.exists(load_filename):
 				self.load_instance()
 			else:
