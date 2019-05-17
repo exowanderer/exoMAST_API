@@ -1,9 +1,11 @@
+import os
+
+from astropy import units
 from json import loads as jsonloads
 from numpy import copy as npcopy
-import os
 from pandas import DataFrame
 from requests import get as requests_get, HTTPError
-from astropy import units
+from sklearn.externals import joblib
 
 class exoMAST_API(object):
 	"""The summary line for a class docstring should fit on one line.
@@ -56,7 +58,7 @@ class exoMAST_API(object):
 			print('Allocating Planetary Information from '
 				  '{} version {} for {}.'.format(api_url,
 												 exomast_version,
-												 input_planet_name))
+												 planet_name))
 		
 		self.api_url = '{}/v{}'.format(api_url, exomast_version)
 		
@@ -88,20 +90,23 @@ class exoMAST_API(object):
 			self.planet_name.replace('TIC ', 'TIC') # delete space
 			self.planet_id = self.planet_name.lower().replace('tic', '')
 
-		default_load_dir = os.environ['HOME'] + '/.exomast_api/'
-		load_filename = '{}.exomast.joblib.save'.format(self.planet_name)
-		load_filename = '{}/{}'.format(default_load_dir, load_filename)
-
-		if os.path.exists(load_filename):
-			self.load_instance()
-		elif not quickstart:
+		if not quickstart:
 			# Default behaviour to grab the planetary identifiers
 			self.get_identifiers()
 
-			# Default behaviour to grab the planetary identifiers 
-			self.get_properties()
+			planet_name_ = self.planet_name.replace(' ', '_')
+			default_load_dir = os.environ['HOME'] + '/.exomast_api/'
+			load_filename = '{}.exomast.joblib.save'
+			load_filename = load_filename.format(planet_name_)
+			load_filename = '{}/{}'.format(default_load_dir, load_filename)
+			print(load_filename)
 
-			self.save_instance()
+			if os.path.exists(load_filename):
+				self.load_instance()
+			else:
+				# Default behaviour to grab the planetary identifiers 
+				self.get_properties()
+				self.save_instance()
 	
 	def check_request(self, request_url, request_return):
 		api_example_url = "https://exo.mast.stsci.edu/api/v0.1/exoplanets/"\
@@ -591,30 +596,32 @@ class exoMAST_API(object):
 		self.print_table(table_name='property', 
 			flt_fmt=flt_fmt, def_fmt=def_fmt, print_none=print_none, latex_style=latex_style, header=header, caption=caption, print_to_file=print_to_file)
 
-	def save_instance(self, save_dir, verbose=False):
-		if self.verbose or verbose:
-			print('[INFO]: Saving Results to {}'.format(save_dir))
-
-		default_save_dir = os.environ['HOME'] + '/.exomast_api/'
+	def save_instance(self, save_dir=None, verbose=False):
+		default_save_dir = os.environ['HOME'] + '/.exomast_api'
 		save_dir = save_dir or default_save_dir
 		if not os.path.exists(save_dir): os.mkdir(save_dir)
 
-		save_filename = '{}.exomast.joblib.save'.format(self.planet_name)
+		planet_name_ = self.planet_name.replace(' ', '_')
+		save_filename = '{}.exomast.joblib.save'.format(planet_name_)
 		save_filename = '{}/{}'.format(save_dir, save_filename)
 
+		if self.verbose or verbose:
+			print('[INFO]: Saving Results to {}'.format(save_filename))
+		
 		joblib.dump(self.__dict__ , save_filename)
 
-	def load_instance(self, load_dir):
-		if self.verbose or verbose:
-			print('[INFO]: Loading Results from {}'.format(load_dir))
-
+	def load_instance(self, load_dir=None):
 		default_load_dir = os.environ['HOME'] + '/.exomast_api/'
 		load_dir = load_dir or default_load_dir
 		if not os.path.exists(load_dir): os.mkdir(load_dir)
 
-		load_filename = '{}.exomast.joblib.save'.format(self.planet_name)
+		planet_name_ = self.planet_name.replace(' ', '_')
+		load_filename = '{}.exomast.joblib.save'.format(planet_name_)
 		load_filename = '{}/{}'.format(load_dir, load_filename)
 		
+		if self.verbose or verbose:
+			print('[INFO]: Loading Results from {}'.format(load_filename))
+
 		self.__dict__ = joblib.load(load_filename)
 
 if __name__ == '__main__':
