@@ -5,7 +5,7 @@ from json import loads as jsonloads
 from numpy import copy as npcopy
 from pandas import DataFrame
 from requests import get as requests_get, HTTPError
-from sklearn.externals import joblib
+import joblib
 
 
 class exoMAST_API(object):
