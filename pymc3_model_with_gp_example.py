@@ -57,10 +57,7 @@ def build_gp_pink_noise_formulaic(times, data, dataerr,
     kernel = xo.gp.terms.SHOTerm(
         log_Sw4=log_Sw4, log_w0=log_w0, log_Q=log_Q)
 
-    gp = xo.gp.GP(kernel, times, dataerr ** 2 + pm.math.exp(log_s2))
-
-    return gp
-
+    return xo.gp.GP(kernel, times, dataerr ** 2 + pm.math.exp(log_s2))
 
 def build_gp_pink_noise(times, data, dataerr,
                         log_Q=np.log(1.0 / np.sqrt(2))):
@@ -157,10 +154,11 @@ def build_synthetic_model(min_phase=-0.1, max_phase=0.1, size=1000,
     '''
     # Planetary orbital parameters
     planet = exoMAST_API(planet_name)
-
+    
+    t0 = planet.transit_time
     deg2rad = np.pi / 180
     orbit = xo.orbits.KeplerianOrbit(
-        t0=planet.transit_time,  # 54278.93671400007
+        t0=t0,  # 54278.93671400007
         period=planet.orbital_period,  # 2.21857567
         a=planet.a_Rs,  # 8.83602
         # b=planet.impact_parameter,  # 0.6631
