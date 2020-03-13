@@ -82,9 +82,7 @@ def build_gp_pink_noise(times, data, dataerr,
     kernel = xo.gp.terms.SHOTerm(
         log_Sw4=log_Sw4, log_w0=log_w0, log_Q=log_Q)
 
-    gp = xo.gp.GP(kernel, times, dataerr ** 2 + pm.math.exp(log_s2))
-
-    return gp
+    return xo.gp.GP(kernel, times, dataerr ** 2 + pm.math.exp(log_s2))
 
 
 def run_pymc3_with_gp(times, data, dataerr, orbit,
