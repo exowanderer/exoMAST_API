@@ -6,8 +6,11 @@ Object oriented python wrapper based on the API provided by exo.mast.stsci.edu/a
 
 This python wrapper accesses the exo.mast.stsci.edu api (v0.1) in order to access both the currated planet information and any other data access (e.g. spectra, file listings, time series) that are provided by mast, now via a python wrapper.
 
-I use the code primarily to access exoplanet system parameters as inputs to any transit light curve fitting tools. I would imagine that RV curve fitting models would also benefit from the background databse access.
+I use the code primarily to access exoplanet system parameters as inputs to any transit light curve fitting tools. I would imagine that RV curve fitting models would also benefit from the background database access.
 
+I owe great thanks for helping to develop this API to documentation and conversations with the exo.MAST team and, especially, @mustaric!
+
+---
 Here is a nominal layout for usage:
 
 # Resolving Exoplanets
