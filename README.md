@@ -8,7 +8,7 @@ This python wrapper accesses the exo.mast.stsci.edu api (v0.1) in order to acces
 
 I use the code primarily to access exoplanet system parameters as inputs to any transit light curve fitting tools. I would imagine that RV curve fitting models would also benefit from the background database access.
 
-I owe great thanks for helping to develop this API to documentation and conversations with the exo.MAST team and, especially, @mustaric!
+I owe great thanks for helping to develop this API to documentation and conversations with the exo.MAST team and, especially, [Dr. Susan Mullally](https://github.com/mustaric)!
 
 ---
 Here is a nominal layout for usage:
