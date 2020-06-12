@@ -170,7 +170,9 @@ class exoMAST_API(object):
         call_request = True
         if jsonfile is not None:
             if isinstance(jsonfile, str) and os.path.exists(jsonfile):
-                self._planet_ident_dict = jsonload(jsonfile)
+                with open(jsonfile) as fin:
+                    self._planet_ident_dict = jsonload(fin)
+
                 call_request = False
             elif isinstance(jsonfile, dict):
                 self._planet_ident_dict = jsonfile
@@ -230,7 +232,9 @@ class exoMAST_API(object):
         call_request = True
         if jsonfile is not None:
             if isinstance(jsonfile, str) and os.path.exists(jsonfile):
-                self._planet_property_dict = jsonload(jsonfile)
+                with open(jsonfile) as fin:
+                    self._planet_property_dict = jsonload(fin)
+
                 call_request = False
             elif isinstance(jsonfile, dict):
                 self._planet_property_dict = jsonfile
