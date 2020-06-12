@@ -3,6 +3,7 @@ import joblib
 
 from astropy import units
 from json import loads as jsonloads
+from json import load as jsonload
 from numpy import copy as npcopy
 from pandas import DataFrame
 from requests import get as requests_get, HTTPError
@@ -169,7 +170,7 @@ class exoMAST_API(object):
         call_request = True
         if jsonfile is not None:
             if isinstance(jsonfile, str) and os.path.exists(jsonfile):
-                self._planet_ident_dict = jsonloads(jsonfile)
+                self._planet_ident_dict = jsonload(jsonfile)
                 call_request = False
             elif isinstance(jsonfile, dict):
                 self._planet_ident_dict = jsonfile
@@ -229,7 +230,7 @@ class exoMAST_API(object):
         call_request = True
         if jsonfile is not None:
             if isinstance(jsonfile, str) and os.path.exists(jsonfile):
-                self._planet_property_dict = jsonloads(jsonfile)
+                self._planet_property_dict = jsonload(jsonfile)
                 call_request = False
             elif isinstance(jsonfile, dict):
                 self._planet_property_dict = jsonfile
