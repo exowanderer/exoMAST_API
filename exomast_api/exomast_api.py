@@ -168,7 +168,7 @@ class exoMAST_API(object):
         #   Especially in case the server is down
         call_request = True
         if jsonfile is not None:
-            if isinstance(jsonfile, str):
+            if isinstance(jsonfile, str) and os.path.exists(jsonfile):
                 self._planet_ident_dict = jsonloads(jsonfile)
                 call_request = False
             elif isinstance(jsonfile, dict):
@@ -176,7 +176,7 @@ class exoMAST_API(object):
                 call_request = False
             else:
                 warning_message(
-                    'Please provide either a json filepath or dicitionary. '
+                    'Please provide either a json filepath or dictionary. '
                     'Default behaviour: Query exo.mast.stsci.edu server.'
                 )
 
@@ -228,7 +228,7 @@ class exoMAST_API(object):
         #   Especially in case the server is down
         call_request = True
         if jsonfile is not None:
-            if isinstance(jsonfile, str):
+            if isinstance(jsonfile, str) and os.path.exists(jsonfile):
                 self._planet_property_dict = jsonloads(jsonfile)
                 call_request = False
             elif isinstance(jsonfile, dict):
@@ -236,7 +236,7 @@ class exoMAST_API(object):
                 call_request = False
             else:
                 warning_message(
-                    'Please provide either a json filepath or dicitionary. '
+                    'Please provide either a json filepath or dictionary. '
                     'Default behaviour: Query exo.mast.stsci.edu server.'
                 )
 
