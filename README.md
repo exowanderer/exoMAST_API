@@ -20,12 +20,29 @@ import exomast_api
 planet_name = 'HD 189733 b'
 exoplanet = exomast_api.exoMAST_API(planet_name, quickstart=False)
 
-'''
-quickstart == True does not automatically run self.get_identifiers() or self.get_properties()
-These are the default because the base operation is to "get the identifiers and properties"
-'''
 ```
-And then look at what data is available
+`quickstart == True` does not automatically run self.get_identifiers() or self.get_properties()
+These are the default because the base operation is to "get the identifiers and properties". This is useful if the user has already downloaded the json file from `exo.mast.stsci.edu` and stored it locally.
+
+For example:
+```bash
+wget -c -O hd187733b_exomast_identifiers.json https://exo.mast.stsci.edu/api/v0.1/exoplanets/identifiers/?name=HD189733b
+wget -c -O hd187733b_exomast_properties.json https://exo.mast.stsci.edu/api/v0.1/exoplanets/HD%20189733%20b/properties
+
+# After the downloads are complete:
+ipython
+```
+
+Followed in `ipython` by 
+```python
+from exomast_api import exoMAST_API
+hd189733b = exoMAST_API('HD 189733 b', quickstart=False)
+hd189733b.get_identifiers(jsonfile='hd187733b_exomast_identifiers.json')
+hd189733b.get_properties(jsonfile='hd187733b_exomast_properties.json')
+```
+
+
+Either which way, we can now look at what data is available
 ```python
 print('Planet Name: {}'.format(exoplanet.planet_name), end=" ")
 print('Rp/Rs: {}'.format(exoplanet.Rp_Rs), end=" ")
