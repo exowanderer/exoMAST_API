@@ -21,8 +21,9 @@ planet_name = 'HD 189733 b'
 exoplanet = exomast_api.exoMAST_API(planet_name, quickstart=True)
 
 ```
-`quickstart == True` does not automatically run self.get_identifiers() or self.get_properties()
-These are the default because the base operation is to "get the identifiers and properties". This is useful if the user has already downloaded the json file from `exo.mast.stsci.edu` and stored it locally.
+`quickstart=True` automatically runs self.get_identifiers() or self.get_properties(), which is the default behaviour; this is the base operation of our Python API: to "get the identifiers and properties".
+
+Setting `quickstart=False` is useful if the user has already downloaded the json file from `exo.mast.stsci.edu` and stored it locally.
 
 For example:
 ```bash
