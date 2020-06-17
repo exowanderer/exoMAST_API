@@ -41,13 +41,13 @@ exoplanet.get_properties(jsonfile='hd187733b_properties.json')
 
 Either which way, we can now look at what data is available
 ```python
-print('Planet Name: {}'.format(exoplanet.planet_name), end=" ")
-print('Rp/Rs: {}'.format(exoplanet.Rp_Rs), end=" ")
-print('a/Rs: {}'.format(exoplanet.a_Rs), end=" ")
-print('Orbital Period: {}'.format(exoplanet.orbital_period), end=" ")
-print('Transit Center Time: {}'.format(exoplanet.transit_time), end=" ")
-print('Eccentricity: {}'.format(exoplanet.eccentricity), end=" ")
-print('Argument of Periastron: {}'.format(exoplanet.omega), end=" ")
+print(f'Planet Name: {exoplanet.planet_name}')
+print(f'Rp/Rs: {exoplanet.Rp_Rs}')
+print(f'a/Rs: {exoplanet.a_Rs}'.format())
+print(f'Orbital Period: {exoplanet.orbital_period}')
+print(f'Transit Center Time: {exoplanet.transit_time}')
+print(f'Eccentricity: {exoplanet.eccentricity}')
+print(f'Argument of Periastron: {exoplanet.omega}')
 ```
 
 There are also dictionaries containing *all* of the information accessed from the STScI exo.MAST API.
