@@ -30,7 +30,7 @@ wget -c -O hd187733b_identifiers.json https://exo.mast.stsci.edu/api/v0.1/exopla
 wget -c -O hd187733b_properties.json https://exo.mast.stsci.edu/api/v0.1/exoplanets/HD%20189733%20b/properties
 ```
 
-# After the downloads are complete, open `ipython` and continue this example
+After the downloads are complete, open `ipython` and continue this example
 ```python
 from exomast_api import exoMAST_API
 hd189733b = exoMAST_API('HD 189733 b', quickstart=False)
