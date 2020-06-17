@@ -33,9 +33,9 @@ wget -c -O hd187733b_properties.json https://exo.mast.stsci.edu/api/v0.1/exoplan
 After the downloads are complete, open `ipython` and continue this example
 ```python
 from exomast_api import exoMAST_API
-hd189733b = exoMAST_API('HD 189733 b', quickstart=False)
-hd189733b.get_identifiers(jsonfile='hd187733b_identifiers.json')
-hd189733b.get_properties(jsonfile='hd187733b_properties.json')
+exoplanet = exoMAST_API('HD 189733 b', quickstart=False)
+exoplanet.get_identifiers(jsonfile='hd187733b_identifiers.json')
+exoplanet.get_properties(jsonfile='hd187733b_properties.json')
 ```
 
 
