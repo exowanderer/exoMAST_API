@@ -18,7 +18,7 @@ Here is a nominal layout for usage:
 ```python
 import exomast_api
 planet_name = 'HD 189733 b'
-exoplanet = exomast_api.exoMAST_API(planet_name, quickstart=False)
+exoplanet = exomast_api.exoMAST_API(planet_name, quickstart=True)
 
 ```
 `quickstart == True` does not automatically run self.get_identifiers() or self.get_properties()
