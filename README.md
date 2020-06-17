@@ -26,8 +26,8 @@ These are the default because the base operation is to "get the identifiers and 
 
 For example:
 ```bash
-wget -c -O hd187733b_exomast_identifiers.json https://exo.mast.stsci.edu/api/v0.1/exoplanets/identifiers/?name=HD189733b
-wget -c -O hd187733b_exomast_properties.json https://exo.mast.stsci.edu/api/v0.1/exoplanets/HD%20189733%20b/properties
+wget -c -O hd187733b_identifiers.json https://exo.mast.stsci.edu/api/v0.1/exoplanets/identifiers/?name=HD189733b
+wget -c -O hd187733b_properties.json https://exo.mast.stsci.edu/api/v0.1/exoplanets/HD%20189733%20b/properties
 
 # After the downloads are complete:
 ipython
@@ -37,8 +37,8 @@ Followed in `ipython` by
 ```python
 from exomast_api import exoMAST_API
 hd189733b = exoMAST_API('HD 189733 b', quickstart=False)
-hd189733b.get_identifiers(jsonfile='hd187733b_exomast_identifiers.json')
-hd189733b.get_properties(jsonfile='hd187733b_exomast_properties.json')
+hd189733b.get_identifiers(jsonfile='hd187733b_identifiers.json')
+hd189733b.get_properties(jsonfile='hd187733b_properties.json')
 ```
 
 
