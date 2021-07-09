@@ -30,9 +30,10 @@ bash
 wget -c -O hd187733b_identifiers.json https://exo.mast.stsci.edu/api/v0.1/exoplanets/identifiers/?name=HD189733b
 wget -c -O hd187733b_properties.json https://exo.mast.stsci.edu/api/v0.1/exoplanets/HD%20189733%20b/properties
 ---
-<bash wget -c -O hd187733b_identifiers.json'https://exo.mast.stsci.edu/api/v0.1/exoplanets/identifiers/?name=HD189733b`>
-{
-  ```<"canonicalName":
+}
+bash wget -c -O hd187733b_identifiers.json'https://exo.mast.stsci.edu/api/v0.1/exoplanets/identifiers/?name=HD189733b
+{}
+  <"canonicalName":
   "HD 189733 b",
     "starName":
     "HD 189733",
@@ -71,7 +72,7 @@ wget -c -O hd187733b_properties.json https://exo.mast.stsci.edu/api/v0.1/exoplan
             "keplerID":null,
               "keplerTCE":null,
                 "tessID":256364928,
-                  "tessTCE":null```>}
+                  "tessTCE":null{}
 ---
 After the downloads are complete, open `ipython` and continue this example
 python
