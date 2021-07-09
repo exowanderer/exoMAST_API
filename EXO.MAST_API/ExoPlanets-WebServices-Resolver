@@ -1,0 +1,134 @@
+ExoPlanets Web Services
+GET /api/v0.1/exoplanets/resolver/{name}
+Search for an exoplanet by its name
+
+Search for an exoplanet by its name
+
+Parameters
+name (string, required) – The name to query against
+
+name – The name to query against
+
+Returns
+Exoplanet information for the given exoplanet name
+
+Request Headers
+accept (string) –
+
+Query Parameters
+flatten_response (boolean) – Request responses to return as a list of lists rather than a list of objects.
+
+format – Format of the response (json/csv/xml/votable)
+
+delimiter – Delimiter used in csv response
+
+raw (boolean) – Request all responses to be in raw form. If false, the response will convert all items of long data type to a string. This is useful for languages with problems encoding long data types.
+
+include_info (boolean) – Request responses to include column info. If true, the response will include the info key within the return object with available column information.
+
+Status Codes
+200 OK – Successful Response
+
+422 Unprocessable Entity – Validation Error
+
+GET /api/v0.1/exoplanets/identifiers/
+Search for an exoplanet by its (possibly non-canonical) name
+
+Search for an exoplanet by its name.
+
+Parameters
+name (string) – The name to query against (does not need to be canonical name)
+
+Returns
+Json dictionary containing the canonical planet name, other planet identifiers, the star name, and Kepler ID/TCE
+
+Query Parameters
+name (string, required) –
+
+Status Codes
+200 OK – Successful Response
+
+422 Unprocessable Entity – Validation Error
+
+GET /api/v0.1/exoplanets/{exoplanet_id}/properties
+Search for an exoplanet by its exoplanet ID
+
+Returns exoplanet properties for a given exoplanet ID
+
+Parameters
+exoplanet_id (string, required) – The exoplanet ID of the planet to query
+
+exoplanet_id – The exoplanet ID to query
+
+Returns
+array of Json dictionaries containing the exoplanet properties
+
+Request Headers
+accept (string) –
+
+Query Parameters
+flatten_response (boolean) – Request responses to return as a list of lists rather than a list of objects.
+
+format – Format of the response (json/csv/xml/votable)
+
+delimiter – Delimiter used in csv response
+
+raw (boolean) – Request all responses to be in raw form. If false, the response will convert all items of long data type to a string. This is useful for languages with problems encoding long data types.
+
+include_info (boolean) – Request responses to include column info. If true, the response will include the info key within the return object with available column information.
+
+Status Codes
+200 OK – Successful Response
+
+422 Unprocessable Entity – Validation Error
+
+GET /api/v0.1/exoplanets/autocomplete/
+Try to autocomplete a planet name
+
+Return a list of exoplanet names
+
+Parameters
+term (string) – The term to attempt to autocomplete
+
+Returns
+Json dictionary containing planet names matching the term
+
+Query Parameters
+term (string, required) –
+
+Status Codes
+200 OK – Successful Response
+
+422 Unprocessable Entity – Validation Error
+
+GET /api/v0.1/exoplanets/vetting/
+Return MAST data products for obs ID
+
+Return data products for an observation ID
+
+Parameters
+obs (int) – The CAOM obsID to query
+
+Returns
+CAOM data for the given observation
+
+Request Headers
+accept (string) –
+
+Query Parameters
+obs (integer, required) –
+
+flatten_response (boolean) – Request responses to return as a list of lists rather than a list of objects.
+
+format – Format of the response (json/csv/xml/votable)
+
+delimiter – Delimiter used in csv response
+
+raw (boolean) – Request all responses to be in raw form. If false, the response will convert all items of long data type to a string. This is useful for languages with problems encoding long data types.
+
+include_info (boolean) – Request responses to include column info. If true, the response will include the info key within the return object with available column information.
+
+Status Codes
+200 OK – Successful Response
+
+422 Unprocessable Entity – Validation Error
