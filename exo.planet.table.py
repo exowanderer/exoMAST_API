@@ -1,4 +1,4 @@
-## Data Queries
+-Data Queries
 exoplanet.get_planet_table()
 print('\n\nFields:\n'.format(key0))
 for val in exoplanet._planet_table['fields']:
