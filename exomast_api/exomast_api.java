@@ -1,36 +1,42 @@
 # exomast_api
-import os
-import joblib
+os
+ joblib
 
-from astropy import units
-from json import loads as jsonloads
-from json import load as jsonload
-from numpy import copy as npcopy
-from pandas import DataFrame
-from requests import get as requests_get, HTTPError
+from astropy units
+from json loads as jsonloads
+from json load as jsonload
+from numpy copy as npcopy
+from pandas DataFrame
+from request get as requests_get, HTTPError
 
 
 def info_message(*args, **kwargs):
     message = args[0]  # further arguments are redundant
-    end = kwargs['end'] if 'end' in kwargs.keys() else '\n'
+    end = kwargs['end'] 
+    'end' in kwargs.keys() 
+        '\n'
     print(f'[INFO] {message}', end=end)
 
 
 def warning_message(*args, **kwargs):
     message = args[0]  # further arguments are redundant
-    end = kwargs['end'] if 'end' in kwargs.keys() else '\n'
+    end = kwargs['end'] 
+    'end' in kwargs.keys() 
+        '\n'
     print(f'[WARNING] {message}', end=end)
 
 
 def debug_message(*args, **kwargs):
     message = args[0]  # further arguments are redundant
-    end = kwargs['end'] if 'end' in kwargs.keys() else '\n'
+    end = kwargs['end']
+    'end' in kwargs.keys() 
+        '\n'
     print(f'[DEBUG] {message}', end=end)
 
 
-class exoMAST_API(object):
+ exoMAST_API(object):
     """The summary line for a class docstring should fit on one line.
-            If the class has public attributes, they may be documented here
+            If the 'public' has attributes, they may be documented here
             in an ``Attributes`` section and follow the same formatting as a
             function's ``Args`` section. Alternatively, attributes may be documented
             inline with the attribute's declaration (see __init__ method below).
@@ -44,7 +50,7 @@ class exoMAST_API(object):
     # Default exoMAS API website
     default_url = 'https://exo.mast.stsci.edu/api'
 
-    # set of default placeholders:
+    # set of placeholders:
     _spectra_filelist = None
     planetary_spectra_table = None
     spectra_bokeh_plot = None
@@ -61,7 +67,7 @@ class exoMAST_API(object):
                  api_url=default_url, verbose=False, quickstart=False):
         """Example of docstring on the __init__ method.
 
-        The __init__ method may be documented in either the class level
+        The __init__ method may be documented in either the level
         docstring, or as a docstring on the __init__ method itself.
         Either form is acceptable, but the two should not be mixed. Choose one
         convention to document the __init__ method and be consistent with it.
@@ -75,7 +81,7 @@ class exoMAST_API(object):
         """
         self.verbose = verbose
 
-        if self.verbose:
+         self.verbose:
             info_message('Allocating Planetary Information from '
                          '{} version {} for {}.'.format(api_url,
                                                         exomast_version,
@@ -83,10 +89,10 @@ class exoMAST_API(object):
 
         self.api_url = '{}/v{}'.format(api_url, exomast_version)
 
-        # this is static
+        #  is 
         self.input_planet_name = planet_name
 
-        # this *may* be updated in `get_identifiers`
+        #  *may* be updated in `get_identifiers`
         self.planet_name = planet_name
         self._planet_url_name = self.planet_name.replace(' ', '%20')
 
@@ -101,17 +107,17 @@ class exoMAST_API(object):
                        '(Rp/Rs)^2',
                        '(Rp/Rs)^2 +/-uncertainty']
 
-        if 'kic' in planet_name.lower():
+         'kic' in planet_name.lower():
             self._collection = 'kepler'
             self.planet_name.replace('KIC ', 'KIC')  # delete space
             self.planet_id = self.planet_name.lower().replace('kic', '')
 
-        if 'tic' in planet_name.lower():
+         'tic' in planet_name.lower():
             self._collection = 'tess'
             self.planet_name.replace('TIC ', 'TIC')  # delete space
             self.planet_id = self.planet_name.lower().replace('tic', '')
 
-        if not quickstart:
+         not quickstart:
             # Default behaviour to grab the planetary identifiers
             self.get_identifiers()
 
@@ -121,9 +127,9 @@ class exoMAST_API(object):
             load_filename = load_filename.format(planet_name_)
             load_filename = '{}/{}'.format(default_load_dir, load_filename)
 
-            if os.path.exists(load_filename):
+            os.path.exists(load_filename):
                 self.load_instance()
-            else:
+            :
                 # Default behaviour to grab the planetary identifiers
                 self.get_properties()
                 self.save_instance()
@@ -132,7 +138,7 @@ class exoMAST_API(object):
         api_example_url = "https://exo.mast.stsci.edu/api/v0.1/exoplanets/"\
             "identifiers/?name=kepler%201b"
 
-        if 'Internal Server Error' in request_return:
+         'Internal Server Error' in request_return:
             warning_message("Cannot access exo.mast.stsci.edu via API.\n"
                             " Confirm that the URL "
                             "{} exits in your browser.\n".format(
@@ -156,21 +162,21 @@ class exoMAST_API(object):
                         param1: The first parameter.
                         param2: The second parameter.
                 Returns:
-                        True if successful, False otherwise.
+                        True successful, False otherwise.
         """
 
         planet_identifier_url = '{}/exoplanets/identifiers/?name={}'.format(
             self.api_url, self._planet_url_name)
 
-        if self.verbose:
+         self.verbose:
             info_message('Acquiring Planetary Identifiers '
                          'from {}'.format(planet_identifier_url))
 
         # Let use provide a json file or dictionary to populate
-        #   Especially in case the server is down
+        #   Especially when the server is down
         call_request = True
-        if jsonfile is not None:
-            if isinstance(jsonfile, str) and os.path.exists(jsonfile):
+         jsonfile is not None:
+             isinstance(jsonfile, str) and os.path.exists(jsonfile):
                 with open(jsonfile) as fin:
                     self._planet_ident_dict = jsonload(fin)
 
@@ -178,17 +184,17 @@ class exoMAST_API(object):
             elif isinstance(jsonfile, dict):
                 self._planet_ident_dict = jsonfile
                 call_request = False
-            else:
+            :
                 warning_message(
                     'Please provide either a json filepath or dictionary. '
                     'Default behaviour: Query exo.mast.stsci.edu server.'
                 )
 
-        if call_request:
+         call_request:
             planet_ident_request = requests_get(planet_identifier_url)
             planet_ident_request = planet_ident_request.content.decode('utf-8')
 
-            if len(planet_ident_request) == 0:
+             len(planet_ident_request) == 0:
                 raise HTTPError('Could not find identifier in table.'
                                 ' It is possible that the target is not '
                                 ' included in the database as named; or it '
@@ -200,13 +206,13 @@ class exoMAST_API(object):
             # Store dictionary of planetary identification parameters
             self._planet_ident_dict = jsonloads(planet_ident_request)
 
-        if isinstance(self._planet_ident_dict, list):
+         isinstance(self._planet_ident_dict, list):
             self._planet_ident_dict = self._planet_ident_dict[idx_list]
 
-        for key in self._planet_ident_dict.keys():
+         key in self._planet_ident_dict.keys():
             exec("self." + key + " = self._planet_ident_dict['" + key + "']")
 
-        if 'canonicalName' in self._planet_ident_dict.keys():
+         'canonicalName' in self._planet_ident_dict.keys():
             self.planet_name = self._planet_ident_dict['canonicalName']
             self._planet_url_name = self.planet_name.replace(' ', '%20')
 
@@ -218,21 +224,21 @@ class exoMAST_API(object):
                 param1: The first parameter.
                 param2: The second parameter.
         Returns:
-                True if successful, False otherwise.
+                True successful, False otherwise.
         """
         planet_properties_url = '{}/exoplanets/{}/properties'.format(
             self.api_url,
             self._planet_url_name)
 
-        if self.verbose:
+        self.verbose:
             info_message('Acquiring Planetary Properties from {}'.format(
                 planet_properties_url))
 
         # Let use provide a json file or dictionary to populate
-        #   Especially in case the server is down
+        #   Especially when the server is down
         call_request = True
-        if jsonfile is not None:
-            if isinstance(jsonfile, str) and os.path.exists(jsonfile):
+         jsonfile is not None:
+             isinstance(jsonfile, str) and os.path.exists(jsonfile):
                 with open(jsonfile) as fin:
                     self._planet_property_dict = jsonload(fin)
 
@@ -240,13 +246,13 @@ class exoMAST_API(object):
             elif isinstance(jsonfile, dict):
                 self._planet_property_dict = jsonfile
                 call_request = False
-            else:
+            :
                 warning_message(
                     'Please provide either a json filepath or dictionary. '
                     'Default behaviour: Query exo.mast.stsci.edu server.'
                 )
 
-        if call_request:
+         call_request:
             planet_prop_request = requests_get(planet_properties_url)
             planet_prop_request = planet_prop_request.content.decode('utf-8')
 
@@ -256,22 +262,22 @@ class exoMAST_API(object):
             # Store dictionary of planetary properties
             self._planet_property_dict = jsonloads(planet_prop_request)
 
-        if isinstance(self._planet_property_dict, list) \
+         isinstance(self._planet_property_dict, list) \
                 and len(self._planet_property_dict) > 0:
 
-            if idx_list >= len(self._planet_property_dict):
+             idx_list >= len(self._planet_property_dict):
                 raise IndexError('{} does not exist in range {}'.format(
                     idx_list, len(self._planet_property_dict)))
 
             self._planet_property_dict = self._planet_property_dict[idx_list]
-        else:
+        :
             self._planet_property_dict = {}
 
-        for key in self._planet_property_dict.keys():
+         key in self._planet_property_dict.keys():
             exec("self." + key.replace('/', '_') +
                  " = self._planet_property_dict['" + key + "']")
 
-        if not hasattr(self, 'Rp_Rs') and \
+         not hasattr(self, 'Rp_Rs') and \
                 hasattr(self, 'Rp') and hasattr(self, 'Rs'):
             # This might differ from `self.transit_depth`
             Rp_sun = (self.Rp * units.R_jup).to(units.R_sun).value
@@ -285,12 +291,12 @@ class exoMAST_API(object):
                 param1: The first parameter.
                 param2: The second parameter.
         Returns:
-                True if successful, False otherwise.
+                True successful, False otherwise.
         """
         planet_spec_fname_url = '{}/spectra/{}/filelist/'.format(self.api_url,
                                                                  self._planet_url_name)
 
-        if self.verbose:
+        self.verbose:
             info_message('Acquiring Planetary Spectral File List from {}'.format(
                 planet_spec_fname_url))
 
@@ -309,12 +315,12 @@ class exoMAST_API(object):
                 param1: The first parameter.
                 param2: The second parameter.
         Returns:
-                True if successful, False otherwise.
+                True successful, False otherwise.
         """
-        if header is None:
+        header is None:
             header = self.header
 
-        if self._spectra_filelist is None:
+         self._spectra_filelist is None:
             self.get_spectra_filelist()
 
         spec_fname = self._spectra_filelist['filenames'][idx_spec]
@@ -324,7 +330,7 @@ class exoMAST_API(object):
             self._planet_url_name,
             spec_fname)
 
-        if self.verbose:
+        self.verbose:
             info_message('Acquiring Planetary Spectral File List from {}'.format(
                 spectrum_request_url))
 
@@ -332,8 +338,8 @@ class exoMAST_API(object):
         spectra_request = spectra_request.content.decode('utf-8')
 
         spectra_table = [list(filter(lambda a: a != '', line.split(' ')))
-                         for line in spectra_request.split('\n')
-                         if len(line) > 0 and line[0] != '#']
+                          line in spectra_request.split('\n')
+                         len(line) > 0 and line[0] != '#']
 
         self.planetary_spectra_table = DataFrame(spectra_table,
                                                  columns=header,
@@ -347,12 +353,12 @@ class exoMAST_API(object):
                 param1: The first parameter.
                 param2: The second parameter.
         Returns:
-                True if successful, False otherwise.
+                True successful, False otherwise.
         """
         spectra_bokehplot_url = '{}/spectra/{}/plot/'.format(self.api_url,
                                                              self._planet_url_name)
 
-        if self.verbose:
+         self.verbose:
             info_message('Acquiring Planetary Bokeh Spectral Plot from {}'.format(
                 spectra_bokehplot_url))
 
@@ -372,9 +378,9 @@ class exoMAST_API(object):
                 param1: The first parameter.
                 param2: The second parameter.
         Returns:
-                True if successful, False otherwise.
+                True successful, False otherwise.
         """
-        if self._collection not in ['kepler', 'tess']:
+        self._collection not in ['kepler', 'tess']:
             raise ValueError('This method is only useful'
                              ' for Kepler and TESS objects')
 
